@@ -1,57 +1,50 @@
-// Import expect for assertions
 const { expect } = require('@playwright/test');
 
-// Define the SignInPage class - represents the Sign In page
 class SignInPage {
-  
-  // initializes the page object with locators
+
   constructor(page) {
-    this.page = page; 
-    
-    // locators for sign-in page elements
+    this.page = page;
+
+    // Locators for sign-in page elements
     this.emailInput = page.locator("#email");
     this.passwordInput = page.locator("#password");
     this.submitButton = page.locator("[type='submit']");
   }
 
-  // Method to navigate to the sign-in page
+  // Navigate to the sign-in page
   async navigateToSignIn() {
-    await this.page.goto("https://app.yosuite.net/signin");
+    await this.page.goto("https://roxsxsnor.yosuite.net/signin");
     await expect(this.page).toHaveTitle("Sign In");
   }
 
-  //  fill email 
+  // Fill email field
   async fillEmail(email) {
     await this.emailInput.fill(email);
   }
 
-  // Method to fill password field
+  // Fill password field
   async fillPassword(password) {
-    // Fill the password input with provided password
     await this.passwordInput.fill(password);
   }
 
-  // Method to click the submit/login button
+  // Click submit button
   async clickSubmit() {
-    // Click the submit button
     await this.submitButton.click();
   }
 
-  
+  // Verify successful login by checking Home dashboard
+  async verifyHomeDashboard() {
+    await expect(this.page.locator("text=Home")).toBeVisible();
+  }
 
-  // Complete login flow - high-level method
+  // Complete login flow
   async login(email, password) {
-    // Navigate to sign-in page
     await this.navigateToSignIn();
-    // Fill email field
     await this.fillEmail(email);
-    // Fill password field
     await this.fillPassword(password);
-    // Click submit button
     await this.clickSubmit();
-  
+    await this.verifyHomeDashboard();
   }
 }
 
-// Export the class
 module.exports = SignInPage;
