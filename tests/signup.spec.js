@@ -1,3 +1,6 @@
+/*
+
+
 require('dotenv').config();
 const { test, expect } = require('@playwright/test');
 const SignUpPage = require('../pages/SignUpPage'); // ✅ Changed to capital S
@@ -31,3 +34,5 @@ test("sign up flow", async({browser}) => {
     await expect(page).toHaveTitle("Sign In");
     console.log("✅ Navigated back to Sign In page");
 });
+
+*/

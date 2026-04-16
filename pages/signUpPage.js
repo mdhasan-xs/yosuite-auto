@@ -1,3 +1,4 @@
+/* 
 const {expect} = require('@playwright/test');
 
 class SignUpPage{
@@ -75,3 +76,5 @@ class SignUpPage{
 }
 
 module.exports = SignUpPage;
+
+*/
