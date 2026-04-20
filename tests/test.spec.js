@@ -14,10 +14,11 @@ test("User Sign In and Navigate to Finance", async ({ page }) => {
   const email = "kemonec347@lawior.com";
   const password = "Mehedi@1234";
 
-  // Step 1: Login and verify Home dashboard
+  //  Login and verify Home dashboard
   await signInPage.login(email, password);
 
-  // Step 2: Wait 3 seconds then navigate to Finance
+  //  Wait 3 seconds then navigate to Finance
   await financePage.navigateToFinance();
+  await page.waitForTimeout(5000);
 
 });
