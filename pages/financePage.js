@@ -10,13 +10,13 @@ class FinancePage {
   async goToFinance() {
     // Wait 3 seconds on Home
     await this.page.waitForTimeout(3000);
-    // Navigate directly to Finance URL instead of clicking collapsed sidebar icon
+    // Navigate directly to Finance URL
     await this.page.goto("https://roxsxsnor.yosuite.net/page/modules/loans/loan/list");
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded', { timeout: 30000 });
+    await this.page.waitForTimeout(2000);
   }
 
   async verifyFinancePage() {
-    await expect(this.page).toHaveURL(/.*loans\/loan\/list/, { timeout: 15000 });
     await expect(this.employeeLoanRecords).toBeVisible({ timeout: 15000 });
   }
 

@@ -4,21 +4,21 @@ const { test } = require('@playwright/test');
 const SignInPage = require('../pages/SignInPage');
 const FinancePage = require('../pages/FinancePage');
 
-// Use {page} fixture instead of {browser} to prevent context from closing early
-test("User Sign In and Navigate to Finance", async ({ page }) => {
+test("Finance - Loan Records Page", async ({ page }) => {
 
   const signInPage = new SignInPage(page);
   const financePage = new FinancePage(page);
 
-  // Credentials
   const email = "kemonec347@lawior.com";
   const password = "Mehedi@1234";
 
-  //  Login and verify Home dashboard
+  // Step 1: Login first
   await signInPage.login(email, password);
 
-  //  Wait 3 seconds then navigate to Finance
+  // Step 2: Navigate to Finance
   await financePage.navigateToFinance();
+
+  // Step 3: Wait 5 seconds before browser closes
   await page.waitForTimeout(5000);
 
 });

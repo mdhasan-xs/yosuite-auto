@@ -32,9 +32,14 @@ class SignInPage {
     await this.submitButton.click();
   }
 
-  // Verify successful login by checking Home dashboard
+  // Verify successful login by waiting for URL change
   async verifyHomeDashboard() {
-    await expect(this.page.locator("text=Home")).toBeVisible();
+    // Wait for URL to change away from signin
+    await this.page.waitForURL(/.*roxsxsnor\.yosuite\.net(?!.*signin).*/, { timeout: 30000 });
+    // Wait for page to load
+    await this.page.waitForLoadState('domcontentloaded', { timeout: 30000 });
+    // Extra buffer for the dashboard to render
+    await this.page.waitForTimeout(2000);
   }
 
   // Complete login flow

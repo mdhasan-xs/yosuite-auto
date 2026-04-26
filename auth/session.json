@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "https://roxsxsnor.yosuite.net",
+      "localStorage": [
+        {
+          "name": "loglevel",
+          "value": "TRACE"
+        }
+      ]
+    }
+  ]
+}
