@@ -4,21 +4,49 @@ const { test } = require('@playwright/test');
 const SignInPage = require('../pages/SignInPage');
 const FinancePage = require('../pages/FinancePage');
 
-test("Finance - Loan Records Page", async ({ page }) => {
+const loanData = {
+  employee:             "Mehedi",
+  code:                 "LOAN-001",   // max 8 characters
+  dateOfApproval:       "2026-04-26",
+  dateOfDisbursement:   "2026-04-26",
+  repaymentStarts:      "2026-05-01",
+  currency:             "United States Dollar",
+  loanAmount:           "1000",
+  interestRate:         "10",
+  totalPayable:         "1100",
+  numberOfInstallments: "5",
+  amountPerInstallment: "220",
+  installmentPeriod:    "1",
+  status:               "Open",
+};
+
+test("Finance - Add New Loan Record", async ({ page }) => {
 
   const signInPage = new SignInPage(page);
   const financePage = new FinancePage(page);
 
-  const email = "kemonec347@lawior.com";
-  const password = "Mehedi@1234";
+  // Login
+  await signInPage.login("kemonec347@lawior.com", "Mehedi@1234");
 
-  // Step 1: Login first
-  await signInPage.login(email, password);
-
-  // Step 2: Navigate to Finance
+  // Navigate to Finance
   await financePage.navigateToFinance();
 
-  // Step 3: Wait 5 seconds before browser closes
+  // Click Add New
+  await financePage.clickAddNew();
+
+  // Fill form
+  await financePage.fillLoanForm(loanData);
+
+  // Assert fields
+  await financePage.assertFormFields(loanData);
+
+  // Save
+  await financePage.saveLoanForm();
+
+  // Verify in table
+  await financePage.verifySavedInTable(loanData);
+
+  // Wait 5 seconds
   await page.waitForTimeout(5000);
 
 });
