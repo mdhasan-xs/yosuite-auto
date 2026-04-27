@@ -30,7 +30,6 @@ class FinancePage {
 
     // Action menu options
     this.editOption   = page.getByRole('menuitem', { name: 'Edit' });
-    this.viewOption   = page.getByRole('menuitem', { name: 'View' });
     this.deleteOption = page.getByRole('menuitem', { name: 'Delete' });
 
     // Edit form fields
@@ -42,12 +41,18 @@ class FinancePage {
     this.installmentsTable = page.getByRole('heading', { name: 'Employee Installments' });
   }
 
+  // Navigate to Finance page
   async goToFinance() {
     await this.page.goto(this.financeURL, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await this.page.waitForSelector('text=Add New', { timeout: 30000 });
     await this.page.waitForTimeout(2000);
   }
 
+  async navigateToFinance() {
+    await this.goToFinance();
+  }
+
+  // Click Add New button
   async clickAddNew() {
     await this.page.getByRole('link', { name: 'Add New' }).click();
     await this.page.getByRole('heading', { name: 'Add' })
@@ -55,6 +60,7 @@ class FinancePage {
     await this.page.waitForTimeout(2000);
   }
 
+  // Fill Add New form
   async fillLoanForm(data) {
 
     await this.employeeDropdown.click();
@@ -98,6 +104,7 @@ class FinancePage {
       .first().click();
   }
 
+  // Assert Add New form fields
   async assertFormFields(data) {
     await expect(this.codeInput).toHaveValue(data.code);
     await expect(this.loanAmountInput).toHaveValue(data.loanAmount);
@@ -106,48 +113,74 @@ class FinancePage {
     await expect(this.installmentPeriodInput).toHaveValue(data.installmentPeriod);
   }
 
+  // Save form
   async saveLoanForm() {
     await this.saveButton.click();
     await this.page.waitForTimeout(3000);
   }
 
+  // Verify saved record appears in table
   async verifySavedInTable(data) {
     await expect(
       this.page.getByText(data.loanAmount, { exact: false }).first()
     ).toBeVisible({ timeout: 15000 });
   }
 
-  async navigateToFinance() {
-    await this.goToFinance();
-  }
-
-  // ─── CASE 1: Click 3 dot action menu on first real row ──────────────────
-  async clickFirstRowActionMenu() {
-    // Use filter to skip hidden ant-table-measure-row
-    // Target only visible rows that are NOT aria-hidden
-    const firstRealRow = this.page.locator(
+  // Get first real row — skips hidden ant-table-measure-row
+  getFirstRealRow() {
+    return this.page.locator(
       'table tbody tr:not([aria-hidden="true"])'
     ).first();
+  }
 
-    await firstRealRow.waitFor({ state: 'visible', timeout: 15000 });
-
-    // Click the last button in the row (3 dot action button)
-    await firstRealRow.locator('button').last().click();
+  // Click 3 dot action menu on a specific row number (0 = first)
+  async clickRowActionMenu(rowIndex = 0) {
+    const row = this.page.locator(
+      'table tbody tr:not([aria-hidden="true"])'
+    ).nth(rowIndex);
+    await row.waitFor({ state: 'visible', timeout: 15000 });
+    await row.locator('button').last().click();
     await this.page.waitForTimeout(1000);
   }
 
-  // ─── CASE 2: Click Edit from action menu ────────────────────────────────
+  // Click Edit from action menu
   async clickEdit() {
     await this.editOption.waitFor({ state: 'visible', timeout: 10000 });
     await this.editOption.click();
-
-    // Wait for Edit heading to confirm form opened
     await this.page.getByRole('heading', { name: 'Edit' })
       .waitFor({ state: 'visible', timeout: 15000 });
     await this.page.waitForTimeout(2000);
   }
 
-  // ─── CASE 3: Update fields in Edit form ─────────────────────────────────
+  // Click Delete from action menu and confirm
+  async clickDelete() {
+    await this.deleteOption.waitFor({ state: 'visible', timeout: 10000 });
+    await this.deleteOption.click();
+    await this.page.waitForTimeout(1000);
+
+    // Confirm delete if a confirmation dialog appears
+    const confirmButton = this.page.getByRole('button', { name: 'Yes' })
+      .or(this.page.getByRole('button', { name: 'OK' }))
+      .or(this.page.getByRole('button', { name: 'Confirm' }));
+
+    // Click confirm only if it appears
+    if (await confirmButton.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await confirmButton.click();
+    }
+
+    await this.page.waitForTimeout(2000);
+  }
+
+  // Verify a record is NOT in the table (after delete)
+  async verifyDeletedFromTable(data) {
+    await this.page.goto(this.financeURL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await this.page.waitForTimeout(2000);
+    await expect(
+      this.page.getByText(data.code, { exact: false })
+    ).not.toBeVisible({ timeout: 10000 });
+  }
+
+  // Update fields in Edit form
   async updateLoanFields(updatedData) {
     await this.editLoanAmount.clear();
     await this.editLoanAmount.fill(updatedData.loanAmount);
@@ -168,22 +201,20 @@ class FinancePage {
     await expect(this.editInstallments).toHaveValue(updatedData.numberOfInstallments);
   }
 
-  // ─── CASE 4: Assert Employee Installments table is visible ──────────────
+  // Assert Employee Installments table is visible
   async assertInstallmentsTableVisible() {
     await expect(this.installmentsTable).toBeVisible({ timeout: 10000 });
     await expect(this.page.locator('table').last()).toBeVisible({ timeout: 10000 });
   }
 
-  // ─── CASE 5: Save and verify updated data back in table ─────────────────
+  // Save and verify updated data back in table
   async saveAndVerifyInTable(updatedData) {
     await this.saveButton.click();
     await this.page.waitForTimeout(3000);
 
-    // Navigate back to loan records table
     await this.page.goto(this.financeURL, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await this.page.waitForTimeout(2000);
 
-    // Verify updated loan amount is visible in table
     await expect(
       this.page.getByText(updatedData.loanAmount, { exact: false }).first()
     ).toBeVisible({ timeout: 15000 });
