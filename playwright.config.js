@@ -12,7 +12,7 @@ module.exports = defineConfig({
   reporter: 'html',
 
   use: {
-    headless: true,
+    headless: false,
     slowMo: 500,
     screenshot: 'on',
     video: 'retain-on-failure',
