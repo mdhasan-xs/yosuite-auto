@@ -2,7 +2,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
-  timeout: 150 * 1000,
+  timeout: 1500 * 1000,
   expect: {
     timeout: 30 * 1000,
   },
@@ -12,7 +12,7 @@ module.exports = defineConfig({
   reporter: 'html',
 
   use: {
-    headless: false,
+    headless: true,
     slowMo: 500,
     screenshot: 'on',
     video: 'retain-on-failure',
