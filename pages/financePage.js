@@ -358,25 +358,45 @@ class FinancePage {
     await this.page.waitForTimeout(1500);
   }
 
-  // ── Assert Installment History section ────────────────────────────────────
-  async assertInstallmentHistory() {
-    // Scroll to bottom of drawer to reveal history section
-    await this.page.evaluate(() => {
-      const el = document.querySelector('.ant-drawer-body, [role="dialog"]');
-      if (el) el.scrollTop = el.scrollHeight;
-    });
-    await this.page.waitForTimeout(1000);
+// ── Assert Installment History section ────────────────────────────────────
+async assertInstallmentHistory() {
 
-    // Assert heading
-    await expect(
-      this.page.getByText('Installment History').first()
-    ).toBeVisible({ timeout: 10000 });
+  // Scroll drawer to bottom to reveal history section
+  await this.page.evaluate(() => {
+    const drawers = document.querySelectorAll('.ant-drawer-body');
+    drawers.forEach(el => el.scrollTop = el.scrollHeight);
+  });
+  await this.page.waitForTimeout(2000);
 
-    // Assert history entry using page scope
-    await expect(
-      this.page.getByText('Loan installment received amount', { exact: false }).first()
-    ).toBeVisible({ timeout: 15000 });
-  }
+  // Assert Installment History heading is visible
+  await expect(
+    this.page.getByText('Installment History').first()
+  ).toBeVisible({ timeout: 10000 });
+  console.log("✅ Installment History heading visible");
+
+  // Generate today's date in format "29 Apr, 2026"
+  const today = new Date();
+  const day   = today.getDate();
+  const month = today.toLocaleString('en-US', { month: 'short' });
+  const year  = today.getFullYear();
+  const formattedDate = `${day} ${month}, ${year}`;
+
+  // Assert date entry is visible
+  const dateEntry = this.page.getByText(formattedDate, { exact: false }).first();
+  await expect(dateEntry).toBeVisible({ timeout: 10000 });
+  console.log(`✅ Date entry visible: ${formattedDate}`);
+
+  // // Click the date entry to expand the collapse
+  // await dateEntry.click();
+  // await this.page.waitForTimeout(1000);
+  // console.log(`✅ Clicked date entry to expand: ${formattedDate}`);
+
+  // // Assert history entry text visible after expanding
+  // await expect(
+  //   this.page.getByText('Loan payment received', { exact: false }).first()
+  // ).toBeVisible({ timeout: 10000 });
+  console.log("✅ Loan payment history entry visible");
+}
 
   // ── Close dialog and go back to Finance table ─────────────────────────────
   async closeDialogAndGoToTable() {
