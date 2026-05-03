@@ -47,7 +47,7 @@ class FinancePage {
     this.installmentNote        = page.locator('[placeholder*="delayed payment"]');
   }
 
-  // ── Navigate to Finance ──────────────────────────────────────────────────
+  // ── Navigate to Finance 
   async goToFinance() {
     await this.page.goto(this.financeURL, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await this.page.waitForSelector('text=Add New', { timeout: 30000 });
@@ -58,7 +58,7 @@ class FinancePage {
     await this.goToFinance();
   }
 
-  // ── Click Add New button (main page) ─────────────────────────────────────
+  // ── Click Add New button (main page) 
   async clickAddNew() {
     await this.page.getByRole('link', { name: 'Add New' }).click();
     await this.page.getByRole('heading', { name: 'Add' })
@@ -66,7 +66,7 @@ class FinancePage {
     await this.page.waitForTimeout(2000);
   }
 
-  // ── Fill loan form ────────────────────────────────────────────────────────
+  // ── Fill loan form 
   async fillLoanForm(data) {
     await this.employeeDropdown.click();
     await this.employeeDropdown.fill(data.employee);
@@ -109,7 +109,7 @@ class FinancePage {
       .first().click();
   }
 
-  // ── Assert loan form fields ───────────────────────────────────────────────
+  // ── Assert loan form fields 
   async assertFormFields(data) {
     await expect(this.codeInput).toHaveValue(data.code);
     await expect(this.loanAmountInput).toHaveValue(data.loanAmount);
@@ -118,14 +118,14 @@ class FinancePage {
     await expect(this.installmentPeriodInput).toHaveValue(data.installmentPeriod);
   }
 
-  // ── Save loan form ────────────────────────────────────────────────────────
+  // ── Save loan form 
   async saveLoanForm() {
     await this.saveButton.click();
     // Wait longer for save and redirect to complete
     await this.page.waitForTimeout(5000);
   }
 
-  // ── Verify saved record in table ──────────────────────────────────────────
+  // ── Verify saved record in table 
   async verifySavedInTable(data) {
     // Reload Finance page to ensure fresh data after save
     await this.page.goto(this.financeURL, { waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -137,14 +137,14 @@ class FinancePage {
     ).toBeVisible({ timeout: 25000 });
   }
 
-  // ── Get real table row by index ───────────────────────────────────────────
+  // ── Get real table row by index
   getRealRow(index = 0) {
     return this.page.locator(
       'table tbody tr:not([aria-hidden="true"])'
     ).nth(index);
   }
 
-  // ── Click 3 dot action menu on a main table row ───────────────────────────
+  // ── Click 3 dot action menu on a main table row 
   async clickRowActionMenu(rowIndex = 0) {
     const row = this.getRealRow(rowIndex);
     await row.waitFor({ state: 'visible', timeout: 15000 });
@@ -152,7 +152,7 @@ class FinancePage {
     await this.page.waitForTimeout(1000);
   }
 
-  // ── Click Edit from action menu ───────────────────────────────────────────
+  // ── Click Edit from action menu 
   async clickEdit() {
     await this.editOption.waitFor({ state: 'visible', timeout: 10000 });
     await this.editOption.click();
@@ -161,7 +161,7 @@ class FinancePage {
     await this.page.waitForTimeout(2000);
   }
 
-  // ── Click View from action menu ───────────────────────────────────────────
+  // ── Click View from action menu 
   async clickView() {
     await this.viewOption.waitFor({ state: 'visible', timeout: 10000 });
     await this.viewOption.click();
@@ -170,7 +170,7 @@ class FinancePage {
     await this.page.waitForTimeout(2000);
   }
 
-  // ── Click Delete and confirm ──────────────────────────────────────────────
+  // ── Click Delete and confirm 
   async clickDelete() {
     await this.deleteOption.waitFor({ state: 'visible', timeout: 10000 });
     await this.deleteOption.click();
@@ -186,7 +186,7 @@ class FinancePage {
     await this.page.waitForTimeout(2000);
   }
 
-  // ── Verify deleted from table ─────────────────────────────────────────────
+  // ── Verify deleted from table 
   async verifyDeletedFromTable(data) {
     await this.page.goto(this.financeURL, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await this.page.waitForTimeout(2000);
@@ -195,7 +195,7 @@ class FinancePage {
     ).not.toBeVisible({ timeout: 10000 });
   }
 
-  // ── Update loan fields ────────────────────────────────────────────────────
+  // ── Update loan fields 
   async updateLoanFields(updatedData) {
     await this.editLoanAmount.clear();
     await this.editLoanAmount.fill(updatedData.loanAmount);
@@ -206,14 +206,14 @@ class FinancePage {
     await this.page.waitForTimeout(1000);
   }
 
-  // ── Assert updated fields ─────────────────────────────────────────────────
+  // ── Assert updated fields 
   async assertUpdatedFields(updatedData) {
     await expect(this.editLoanAmount).toHaveValue(updatedData.loanAmount);
     await expect(this.editInterestRate).toHaveValue(updatedData.interestRate);
     await expect(this.editInstallments).toHaveValue(updatedData.numberOfInstallments);
   }
 
-  // ── Assert Employee Installments table visible ────────────────────────────
+  // ── Assert Employee Installments table visible 
   async assertInstallmentsTableVisible() {
     await expect(
       this.viewDialog.getByRole('heading', { name: 'Employee Installments' })
@@ -223,7 +223,7 @@ class FinancePage {
     ).toBeVisible({ timeout: 10000 });
   }
 
-  // ── Save and verify updated data in table ─────────────────────────────────
+  // ── Save and verify updated data in table 
   async saveAndVerifyInTable(updatedData) {
     await this.saveButton.click();
     await this.page.waitForTimeout(5000);
@@ -234,7 +234,7 @@ class FinancePage {
     ).toBeVisible({ timeout: 25000 });
   }
 
-  // ── Assert View dialog details section ───────────────────────────────────
+  // ── Assert View dialog details section 
   async assertViewDialogDetails() {
     await expect(
       this.viewDialog.getByRole('heading', { name: 'Details' })
@@ -247,7 +247,7 @@ class FinancePage {
     ).toBeVisible({ timeout: 10000 });
   }
 
-  // ── Click Add New inside Employee Installments (scoped to dialog) ─────────
+  //  Click Add New inside Employee Installments (scoped to dialog) 
   async clickInstallmentsAddNew() {
     const addNewBtn = this.viewDialog
       .getByRole('button', { name: 'Add New' });
@@ -256,7 +256,7 @@ class FinancePage {
     await this.page.waitForTimeout(2000);
   }
 
-  // ── Fill installment form ─────────────────────────────────────────────────
+  // ── Fill installment form 
   async fillInstallmentForm(data) {
     // Wait for modal to open using id
     await this.installmentAmount.waitFor({ state: 'visible', timeout: 15000 });
@@ -281,27 +281,27 @@ class FinancePage {
     await this.page.waitForTimeout(1000);
   }
 
-  // ── Save installment form ─────────────────────────────────────────────────
+  // ── Save installment form 
   async saveInstallmentForm() {
     await this.page.getByRole('button', { name: 'Save' }).last().click();
     await this.page.waitForTimeout(3000);
   }
 
-  // ── Verify installment in Employee Installments table ────────────────────
+  // ── Verify installment in Employee Installments table 
   async verifyInstallmentInTable(data) {
     await expect(
       this.viewDialog.getByText(data.amount, { exact: false }).first()
     ).toBeVisible({ timeout: 15000 });
   }
 
-  // ── Get installment row by index (scoped to dialog) ───────────────────────
+  // ── Get installment row by index (scoped to dialog)
   getInstallmentRow(index = 0) {
     return this.viewDialog.locator(
       'table tbody tr:not([aria-hidden="true"])'
     ).nth(index);
   }
 
-  // ── Click action menu on installment row ──────────────────────────────────
+  // ── Click action menu on installment row 
   async clickInstallmentRowMenu(rowIndex = 0) {
     const row = this.getInstallmentRow(rowIndex);
     await row.waitFor({ state: 'visible', timeout: 15000 });
@@ -309,7 +309,7 @@ class FinancePage {
     await this.page.waitForTimeout(1000);
   }
 
-  // ── Edit installment row ──────────────────────────────────────────────────
+  // ── Edit installment row 
   async editInstallment(rowIndex, newAmount) {
     await this.clickInstallmentRowMenu(rowIndex);
     await this.editOption.waitFor({ state: 'visible', timeout: 10000 });
@@ -325,7 +325,7 @@ class FinancePage {
     await this.page.waitForTimeout(3000);
   }
 
-  // ── Delete installment row ────────────────────────────────────────────────
+  // ── Delete installment row 
   async deleteInstallment(rowIndex) {
     await this.clickInstallmentRowMenu(rowIndex);
     await this.deleteOption.waitFor({ state: 'visible', timeout: 10000 });
@@ -342,7 +342,7 @@ class FinancePage {
     await this.page.waitForTimeout(2000);
   }
 
-  // ── View installment row and close ────────────────────────────────────────
+  // ── View installment row and close 
   async viewInstallmentAndReturn(rowIndex) {
     await this.clickInstallmentRowMenu(rowIndex);
     await this.viewOption.waitFor({ state: 'visible', timeout: 10000 });
@@ -372,7 +372,7 @@ async assertInstallmentHistory() {
   await expect(
     this.page.getByText('Installment History').first()
   ).toBeVisible({ timeout: 10000 });
-  console.log("✅ Installment History heading visible");
+  console.log(" Installment History heading visible");
 
   // Generate today's date in format "29 Apr, 2026"
   const today = new Date();
@@ -384,18 +384,18 @@ async assertInstallmentHistory() {
   // Assert date entry is visible
   const dateEntry = this.page.getByText(formattedDate, { exact: false }).first();
   await expect(dateEntry).toBeVisible({ timeout: 10000 });
-  console.log(`✅ Date entry visible: ${formattedDate}`);
+  console.log(`Date entry visible: ${formattedDate}`);
 
   // // Click the date entry to expand the collapse
   // await dateEntry.click();
   // await this.page.waitForTimeout(1000);
-  // console.log(`✅ Clicked date entry to expand: ${formattedDate}`);
+  // console.log(`Clicked date entry to expand: ${formattedDate}`);
 
   // // Assert history entry text visible after expanding
   // await expect(
   //   this.page.getByText('Loan payment received', { exact: false }).first()
   // ).toBeVisible({ timeout: 10000 });
-  console.log("✅ Loan payment history entry visible");
+  console.log("Loan payment history entry visible");
 }
 
   // ── Close dialog and go back to Finance table ─────────────────────────────
